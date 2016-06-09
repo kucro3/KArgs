@@ -12,16 +12,17 @@ public class KArgsService {
 			if(string.startsWith("-"))
 				if(string.startsWith("--"))
 				{
-					String property = string.substring(2);
+					String property = string.charAt(2) + "";
+					String value = string.substring(3);
 					if(ctx.cotainsProperty(property))
 					{
-						if(checkDuplication)
-							if(ctx.getProperty(property) != null)
-								throw new IllegalArgumentException("Property duplicated: " + string);
-						String[] exps = SPLIT.split(string, 2);
+						String[] exps = SPLIT.split(value, 2);
 						if(exps.length != 2)
 							throw new IllegalArgumentException("Illegal property: " + string);
-						ctx.properties.put(property, new KArgsContext.Property(exps[0], exps[1]));
+						KArgsContext.Property prop;
+						if((prop = ctx.getProperty(property)) == null)
+							ctx.properties.put(property, prop = new KArgsContext.Property());
+						prop.set(exps[0], exps[1]);
 					}
 					else
 						throw new IllegalArgumentException("Invalid property argument: " + string);
@@ -34,6 +35,8 @@ public class KArgsService {
 						if(checkDuplication)
 							if(ctx.getOption(option) != null)
 								throw new IllegalArgumentException("Option duplicated: " + string);
+						if(!ctx.needArgument(option))
+							continue;
 						i++;
 						if(i < args.length)
 							ctx.options.put(option, args[i]);

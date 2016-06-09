@@ -28,19 +28,24 @@ public class KArgsContext {
 		return new KArgsContext(options, optionDescriptions, properties, propertyDescriptions);
 	}
 	
-	public KArgsContext addOption(String name)
+	public KArgsContext addOption(String name, boolean needArgument)
 	{
-		return addOption(name, null);
+		return addOption(name, needArgument, null);
 	}
 	
-	public KArgsContext addOption(String name, String[] description)
+	public KArgsContext addOption(String name, boolean needArgument, String[] description)
 	{
 		Objects.requireNonNull(name);
 		
-		options.put(name, OPTION_NULL);
+		options.put(name, needArgument ? OPTION_NULL : null);
 		if(description != null)
 			optionDescriptions.put(name, description);
 		return this;
+	}
+	
+	public boolean needArgument(String option)
+	{
+		return options.get(option) != null;
 	}
 	
 	public KArgsContext addProperty(String name)
@@ -116,7 +121,7 @@ public class KArgsContext {
 		return propertyDescriptions.containsKey(name);
 	}
 	
-	private static final Property PROPERTY_NULL = new Property(null, null);
+	private static final Property PROPERTY_NULL = new Property();
 	
 	private static final String OPTION_NULL = new String();
 	
@@ -130,24 +135,25 @@ public class KArgsContext {
 	
 	public static class Property
 	{
-		public Property(String key, String value)
+		public Property()
 		{
-			this.key = key;
-			this.value = value;
 		}
 		
-		public String getKey()
+		public String get(String key)
 		{
-			return key;
+			return values.get(key);
 		}
 		
-		public String getValue()
+		public void set(String key, String value)
 		{
-			return value;
+			values.put(key, value);
 		}
 		
-		private final String key;
+		public boolean contains(String key)
+		{
+			return values.containsKey(key);
+		}
 		
-		private final String value;
+		private final Map<String, String> values = new HashMap<>();
 	}
 }
