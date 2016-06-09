@@ -10,7 +10,7 @@ public class KArgsService {
 		{
 			string = args[i];
 			if(string.startsWith("-"))
-				if(string.startsWith("-"))
+				if(string.startsWith("--"))
 				{
 					String property = string.substring(2);
 					if(ctx.cotainsProperty(property))
