@@ -36,7 +36,10 @@ public class KArgsService {
 							if(ctx.getOption(option) != null)
 								throw new IllegalArgumentException("Option duplicated: " + string);
 						if(!ctx.needArgument(option))
+						{
+							ctx.options.put(option, KArgsContext.OPTION_ARGUMENT_NULL);
 							continue;
+						}
 						i++;
 						if(i < args.length)
 							ctx.options.put(option, args[i]);

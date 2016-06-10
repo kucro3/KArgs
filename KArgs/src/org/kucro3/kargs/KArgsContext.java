@@ -13,7 +13,7 @@ public class KArgsContext {
 		this.propertyDescriptions = new HashMap<>();
 	}
 	
-	KArgsContext(Map<String, String> arg0, Map<String, String[]> arg1,
+	KArgsContext(Map<String, Object> arg0, Map<String, String[]> arg1,
 			Map<String, Property> arg2, Map<String, String[]> arg3)
 	{
 		this();
@@ -41,6 +41,18 @@ public class KArgsContext {
 		if(description != null)
 			optionDescriptions.put(name, description);
 		return this;
+	}
+	
+	public boolean hasOption(String name)
+	{
+		Object obj = options.get(name);
+		return !(obj == null || obj == OPTION_NULL);
+	}
+	
+	public boolean hasProperty(String name)
+	{
+		Object obj = properties.get(name);
+		return !(obj == null || obj == PROPERTY_NULL);
 	}
 	
 	public boolean needArgument(String option)
@@ -77,10 +89,10 @@ public class KArgsContext {
 	
 	public String getOption(String name)
 	{
-		String opt = options.get(name);
-		if(opt == OPTION_NULL)
+		Object opt = options.get(name);
+		if(opt == OPTION_NULL || opt == OPTION_ARGUMENT_NULL)
 			opt = null;
-		return opt;
+		return (String) opt;
 	}
 	
 	public Property getProperty(String name)
@@ -123,11 +135,13 @@ public class KArgsContext {
 	
 	private static final Property PROPERTY_NULL = new Property();
 	
-	private static final String OPTION_NULL = new String();
+	private static final Object OPTION_NULL = new Object();
+	
+	static final Object OPTION_ARGUMENT_NULL = new Object();
 	
 	private final Map<String, String[]> optionDescriptions;
 	
-	final Map<String, String> options;
+	final Map<String, Object> options;
 	
 	private final Map<String, String[]> propertyDescriptions;
 	
